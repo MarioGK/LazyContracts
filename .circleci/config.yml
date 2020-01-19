@@ -13,10 +13,10 @@ jobs:
     steps:
       - checkout
       - run:
-          name: "Copying .cs files to the artifacts folder"
+          name: "Copying .cs files to the artifacts folder."
           command: xcopy ".\LazyContracts\*.cs" ".\Artifacts\" /c /i /q /y
       - run:
-          name: "Copying .txt files to the artifacts folder"
+          name: "Copying .txt files to the artifacts folder."
           command: xcopy ".\LazyContracts\*.txt" ".\Artifacts\" /c /i /q /y
   release:
     description: Github Release.
