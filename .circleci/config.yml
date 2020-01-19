@@ -22,8 +22,6 @@ jobs:
     description: Github Release.
     executor: github-release/default
     steps:
-      - github-release/delete:
-          tag: Latest
       - github-release/create:
           tag: Latest
           title: Latest Version

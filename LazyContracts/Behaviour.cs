@@ -11,24 +11,27 @@ namespace LazyContracts
         private bool CannotRun => GameSettings.Instance == null || 
                                   GameSettings.Instance.MyCompany == null || 
                                   GameSettings.Instance.MyCompany.WorkItems == null;
+
+        private bool disabled = false;
+        
+        public override void OnActivate()
+        {
+            Console.LogInfo("LazyContracts Activated!");
+        }
         
         public override void OnDeactivate()
         {
             Console.LogInfo("LazyContracts Deactivated!");
-            timer.Stop();
         }
 
-        public override void OnActivate()
-        {
-            Console.LogInfo("LazyContracts Activated!");
-            timer.AutoReset = true;
-            timer.Start();
-            timer.Elapsed += TimerOnElapsed;
-        }
-
-        private void TimerOnElapsed(object sender, ElapsedEventArgs e)
+        private void Update()
         {
             if (CannotRun)
+            {
+                return;
+            }
+
+            if (disabled)
             {
                 return;
             }
@@ -42,7 +45,6 @@ namespace LazyContracts
 
             AutoPromote(workItems);
             AutoBeta(workItems);
-            
         }
 
         /// <summary>
@@ -64,7 +66,7 @@ namespace LazyContracts
             catch (Exception e)
             {
                 Console.LogError($"Error while running AutoPromote Exception: {e}");
-                timer.Stop();
+                disabled = true;
             }
         }
 
@@ -76,7 +78,7 @@ namespace LazyContracts
         {
             try
             {
-                var alphaPhase = workItems.OfType<SoftwareAlpha>().ToList();
+                var alphaPhase = workItems.OfType<SoftwareAlpha>();
 
                 foreach (var alpha in alphaPhase.Where(alpha => alpha.contract != null))
                 {
@@ -107,10 +109,8 @@ namespace LazyContracts
             catch (Exception e)
             {
                 Console.LogError($"Error while running AutoBeta Exception: {e}");
-                timer.Stop();
+                disabled = true;
             }
         }
-
-        private readonly Timer timer = new Timer(200);
     }
 }
