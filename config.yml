@@ -1,0 +1,20 @@
+version: 2.1
+
+orbs:
+  win: circleci/windows@1.0.0
+
+jobs:
+  build:
+    executor:
+      name: win/vs2019
+      shell: powershell.exe
+    steps:
+      - checkout
+      - run:
+          name: "Copying .cs files to the artifacts folder"
+          command: xcopy ".\LazyContracts\*.cs" ".\Artifacts\" /c /i /q /y
+      - run:
+          name: "Copying .txt files to the artifacts folder"
+          command: xcopy ".\LazyContracts\*.txt" ".\Artifacts\" /c /i /q /y
+      - store_artifacts:
+          path: .\Artifacts\
