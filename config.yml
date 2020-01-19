@@ -6,6 +6,7 @@ orbs:
 
 jobs:
   build:
+    description: Copying files.
     executor:
       name: win/vs2019
       shell: powershell.exe
@@ -19,7 +20,7 @@ jobs:
           command: xcopy ".\LazyContracts\*.txt" ".\Artifacts\" /c /i /q /y
       - store_artifacts:
           path: .\Artifacts\
-  build:
+  release:
     description: Github Release.
     executor: github-release/default
     steps:
