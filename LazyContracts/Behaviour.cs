@@ -56,7 +56,7 @@ namespace LazyContracts
             try
             {
                 var designDocuments = workItems.OfType<DesignDocument>()
-                    .Where(designDocument => designDocument.Iteration >= 1 && !designDocument.Done && designDocument.contract != null);
+                    .Where(designDocument => designDocument.Iteration >= 1 && !designDocument.Done && designDocument.contract != null).ToList();
 
                 foreach (var designDocument in designDocuments)
                 {
@@ -78,9 +78,9 @@ namespace LazyContracts
         {
             try
             {
-                var alphaPhase = workItems.OfType<SoftwareAlpha>();
+                var alphaPhase = workItems.OfType<SoftwareAlpha>().Where(alpha => alpha.contract != null).ToList();
 
-                foreach (var alpha in alphaPhase.Where(alpha => alpha.contract != null))
+                foreach (var alpha in alphaPhase)
                 {
                     if (alpha.InBeta)
                     {
@@ -91,7 +91,7 @@ namespace LazyContracts
                         }
                         else
                         {
-                            if (alpha.FixedBugs >= alpha.Bugs - 1f)
+                            if (alpha.FixedBugs >= Math.Min(5, alpha.Bugs / 2f))
                             {
                                 alpha.PromoteAction();
                             }
@@ -99,7 +99,7 @@ namespace LazyContracts
                     }
                     else
                     {
-                        if (alpha.GetProgress() >= alpha.contract.MinProg * 1.2f)
+                        if (alpha.GetProgress() >= Math.Min(100f,alpha.contract.MinProg * 1.2f))
                         {
                             alpha.PromoteAction();
                         }
